@@ -20,6 +20,11 @@ def liveness():
     return flask.jsonify({}), 200
 
 
+@app.route('/aagam')
+def aagam():
+    return flask.jsonify({"aagam": "aagam"}), 200
+
+
 @app.route('/api/v1/scan', methods=['POST'])
 def scan():
     """Scan endpoint for consumption of the scheduled job."""
@@ -37,9 +42,9 @@ def register():
     updates existing repo information.
     """
     resp_dict = {
-                 "data": [],
-                 "success": True,
-                 "summary": "{} successfully registered"
+        "data": [],
+        "success": True,
+        "summary": "{} successfully registered"
     }
     input_json = request.get_json()
     if request.content_type != 'application/json':
