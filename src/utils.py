@@ -13,7 +13,6 @@ import requests
 import os
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 GREMLIN_SERVER_URL_REST = "http://{host}:{port}".format(
@@ -31,7 +30,7 @@ class Postgres:
     def __init__(self):
         """Postgres utility class constructor."""
         con_string = 'postgresql://{user}' + ':{passwd}@{pg_host}:' \
-            + '{pg_port}/{db}?sslmode=disable'
+                     + '{pg_port}/{db}?sslmode=disable'
 
         self.connection = con_string.format(
             user=os.getenv('POSTGRESQL_USER'),
@@ -118,8 +117,8 @@ class DatabaseIngestion():
     @staticmethod
     def _update_data(session, data):
         try:
-            entries = session.query(OSIORegisteredRepos).\
-                filter(OSIORegisteredRepos.git_url == data["git-url"]).\
+            entries = session.query(OSIORegisteredRepos). \
+                filter(OSIORegisteredRepos.git_url == data["git-url"]). \
                 update(_to_object_dict(data))
             session.commit()
         except NoResultFound:
@@ -176,7 +175,7 @@ class DatabaseIngestion():
 
         try:
             entry = session.query(OSIORegisteredRepos) \
-                    .filter(OSIORegisteredRepos.git_url == search_key).one()
+                .filter(OSIORegisteredRepos.git_url == search_key).one()
         except NoResultFound:
             logger.info("No info for search_key '%s' was found", search_key)
             return {'error': 'No information in the records', 'is_valid': False}
@@ -185,8 +184,8 @@ class DatabaseIngestion():
             raise Exception("Error in storing the record in current session")
         except Exception as e:
             raise {
-                  'error': 'Error in getting info due to {}'.format(e),
-                  'is_valid': False
+                'error': 'Error in getting info due to {}'.format(e),
+                'is_valid': False
             }
 
         return {'is_valid': True, 'data': entry.to_dict()}
@@ -201,10 +200,7 @@ def server_run_flow(flow_name, flow_args):
     """
     logger.info('Running flow {}'.format(flow_name))
     start = datetime.datetime.now()
-
-    init_celery(result_backend=False)
     dispacher_id = run_flow(flow_name, flow_args)
-
     elapsed_seconds = (datetime.datetime.now() - start).total_seconds()
     logger.info("It took {t} seconds to start {f} flow.".format(
         t=elapsed_seconds, f=flow_name))
